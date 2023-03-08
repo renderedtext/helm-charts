@@ -1,10 +1,4 @@
 # Semaphore Helm charts
 
-## Installation
-
-```bash
-helm install semaphore-agent charts/agent \
-  --create-namespace \
-  --namespace semaphore \
-  -f custom-values.yaml
-```
+Helm repository for Semaphore charts. The current charts available are:
+- [Semaphore agent](./charts/agent/README.md)
