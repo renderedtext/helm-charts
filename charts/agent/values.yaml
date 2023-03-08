@@ -2,22 +2,16 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-namespace:
-  create: true
-  name: "semaphore"
-
+# Configuration values for the agent deployment
+# - endpoint                 The Semaphore organization URL endpoint, e.g., <organization>.semaphoreci.com (required)
+# - token                    The Semaphore agent type registration token (required)
+# - interruptionGracePeriod  How long will the agent wait for a running job to finish,
+#                            after receiving an interruption signal from Kubernetes.
+# - imagePullPolicy          The policy to use when pulling images specified in job YAMLs.
 agent:
-  # The Semaphore organization URL endpoint, e.g., <organization>.semaphoreci.com
   endpoint: ""
-
-  # The Semaphore agent type registration token (required)
   token: ""
-
-  # How long will the agent wait for a running job to finish,
-  # after receiving an interruption signal from Kubernetes.
   interruptionGracePeriod: 300
-
-  # The policy to use when pulling images specified in job YAMLs.
   imagePullPolicy: IfNotPresent
 
 image:
@@ -25,6 +19,11 @@ image:
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
+
+autoscaling:
+  enabled: true
+  min: 1
+  max: 10
 
 imagePullSecrets: []
 nameOverride: ""
