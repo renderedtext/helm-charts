@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "metricsServer.name" . }}
+  labels:
+    {{- include "metricsServer.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "metricsServer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      name: {{ include "metricsServer.name" . }}
+      labels:
+        {{- include "metricsServer.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "metricsServer.name" . }}
+      containers:
+        - name: server
+          image: semaphoreci/metrics-apiserver
+          args:
+            - --secure-port=6443
+            - --cert-dir=/var/run/serving-cert
+            - --v=10
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - containerPort: 6443
+              name: https
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - mountPath: /tmp
+              name: temp-vol
+      volumes:
+        - name: temp-vol
+          emptyDir: {}
