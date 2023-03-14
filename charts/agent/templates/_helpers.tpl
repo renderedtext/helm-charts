@@ -49,3 +49,13 @@ Selector labels
 app.kubernetes.io/name: {{ include "agent.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Labels for the secret used to store the agent type information.
+*/}}
+{{- define "agent.secret.labels" -}}
+{{ include "agent.labels" . }}
+{{- if .Values.agent.autoscaling.enabled }}
+semaphore-agent/autoscaled: true
+{{- end }}
+{{- end }}

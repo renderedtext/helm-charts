@@ -2,37 +2,97 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Configuration values for the agent deployment
-# - endpoint                 The Semaphore organization URL endpoint, e.g., <organization>.semaphoreci.com (required)
-# - token                    The Semaphore agent type registration token (required)
-# - interruptionGracePeriod  How long will the agent wait for a running job to finish,
-#                            after receiving an interruption signal from Kubernetes.
-# - imagePullPolicy          The policy to use when pulling images specified in job YAMLs.
-agent:
-  endpoint: ""
-  token: ""
-  interruptionGracePeriod: 300
-  imagePullPolicy: IfNotPresent
-
-image:
-  repository: semaphoreci/agent
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-autoscaling:
-  enabled: true
-  min: 1
-  max: 10
-
-imagePullSecrets: []
+# Override the chart name
 nameOverride: ""
+
+# Override the fully qualified app name.
 fullnameOverride: ""
 
-resources: {}
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+##########################################################
+# Configuration for the pods running the Semaphore agent #
+##########################################################
+agent:
+
+  # The Semaphore organization URL used to register the agents.
+  # For example: <organization-name>.semaphoreci.com
+  endpoint: ""
+
+  # The Semaphore agent type registration token used to register the agents for this pool.
+  token: ""
+
+  # Controls how long the Semaphore agent waits before stopping a job
+  # it is currently running when it receives an interruption signal from Kubernetes.
+  # Usually, the agent would receive an interruption signal from Kubernetes
+  # when the HorizontalPodAutoscaler decides to scale down the number of agents running.
+  interruptionGracePeriod: 300
+
+  # The Docker image used to run the agents.
+  image: semaphoreci/agent
+
+  # By default, the chart appVersion is used as the image tag. This overrides that.
+  imageTag: ""
+
+  # The image pull policy used for the agent pods.
+  imagePullPolicy: IfNotPresent
+
+  # The image pull secrets used to pull the agent image.
+  imagePullSecrets: []
+
+  # Environment variables to expose to jobs executed by this agent
+  env: []
+
+  # Annotations to add to the agent pods.
+  annotations: {}
+
+  # Labels to add to the agent pods.
+  labels: {}
+
+  # The resources used in the agent pods.
+  # The agents should work just fine with these resources,
+  # but having them here allows us to increase them if not enough.
+  resources:
+    limits:
+      cpu: 0.1
+      memory: 50m
+    requests:
+      cpu: 0.05
+      memory: 25m
+
+  autoscaling:
+    enabled: true
+    min: 1
+    max: 10
+
+#################################################################
+# Configuration for the pods created to run the Semaphore jobs. #
+#################################################################
+jobs:
+
+  # The Docker image used to run the job, if no containers are specified in the job YAML.
+  # If this is not specified, jobs that do not specify containers in their YAML (shell jobs) will not work.
+  image: ""
+
+  # The image pull policy used in Semaphore job pods.
+  imagePullPolicy: IfNotPresent
+
+  # The image pull secrets used in Semaphore job pods.
+  imagePullSecrets: []
+
+  # Additional environment variables to expose to the Semaphore job pods.
+  env: []
+
+  # Annotations to add to the Semaphore job pods.
+  annotations: {}
+
+  # Labels to add to the Semaphore job pods.
+  labels: {}
+
+  # The resources used in the Semaphore job pods.
+  # By default, no resources are specified, but specifying these is recommended.
+  resources:
+    # limits:
+    #   cpu: 1
+    #   memory: 1G
+    # requests:
+    #   cpu: 0.5
+    #   memory: 500m

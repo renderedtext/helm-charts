@@ -15,6 +15,9 @@ spec:
       external:
         metric:
           name: occupied_agents_percentage
+          # selector:
+          #   matchLabels:
+          #     agent_type: {{ .Values.agent_type.name }}
         target:
           type: Value
           value: 75
@@ -45,6 +48,9 @@ spec:
       external:
         metric:
           name: queued_jobs
+          selector:
+            matchLabels:
+              agent_type: {{ .Values.agent_type.name }}
         target:
           type: Value
           value: 1
