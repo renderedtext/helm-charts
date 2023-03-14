@@ -1,0 +1,31 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "metricsServer.name" . }}-external-metrics-access
+  labels:
+    {{- include "metricsServer.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - external.metrics.k8s.io
+    resources: ["*"]
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "metricsServer.name" . }}-resource-reader
+  labels:
+    {{- include "metricsServer.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - pods
+      - services
+      - configmaps
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch

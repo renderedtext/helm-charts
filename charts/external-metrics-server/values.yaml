@@ -1,0 +1,9 @@
+# Default values for external-metrics-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Override the chart name
+nameOverride: ""
+
+# Override the fully qualified app name.
+fullnameOverride: ""
