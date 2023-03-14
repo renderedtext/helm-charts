@@ -23,6 +23,11 @@ spec:
             - --secure-port=6443
             - --cert-dir=/var/run/serving-cert
             - --v=10
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           ports:
             - containerPort: 6443
               name: https
