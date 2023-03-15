@@ -77,5 +77,7 @@ jobs:
   # The image pull secrets used in Semaphore job pods.
   imagePullSecrets: []
 
-  # Additional environment variables to expose to the Semaphore job pods.
+  # A list of key-value environment variables to expose to the Semaphore job pods.
   env: []
+  # - VAR_1=VALUE_1
+  # - VAR_2=VALUE_2
