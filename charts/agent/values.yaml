@@ -8,9 +8,9 @@ nameOverride: ""
 # Override the fully qualified app name.
 fullnameOverride: ""
 
-##########################################################
-# Configuration for the pods running the Semaphore agent #
-##########################################################
+###########################################################
+# Configuration for the pods running the Semaphore agents #
+###########################################################
 agent:
 
   # The Semaphore organization URL used to register the agents.
@@ -38,9 +38,6 @@ agent:
   # The image pull secrets used to pull the agent image.
   imagePullSecrets: []
 
-  # Environment variables to expose to jobs executed by this agent
-  env: []
-
   # Annotations to add to the agent pods.
   annotations: {}
 
@@ -49,7 +46,7 @@ agent:
 
   # The resources used in the agent pods.
   # The agents should work just fine with these resources,
-  # but having them here allows us to increase them if not enough.
+  # but having them configured here allows us to increase them if not enough.
   resources:
     limits:
       cpu: 0.1
@@ -58,14 +55,16 @@ agent:
       cpu: 0.05
       memory: 25m
 
+  # NOTE: this requires the external-metrics-server chart to be installed.
   autoscaling:
     enabled: true
     min: 1
     max: 10
 
-#################################################################
-# Configuration for the pods created to run the Semaphore jobs. #
-#################################################################
+##############################################
+# Configuration for the pods created by the  #
+# Semaphore agents to run the Semaphore jobs #
+##############################################
 jobs:
 
   # The Docker image used to run the job, if no containers are specified in the job YAML.

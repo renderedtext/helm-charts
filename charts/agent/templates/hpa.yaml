@@ -1,26 +1,28 @@
-{{- if .Values.autoscaling.enabled }}
+{{- if .Values.agent.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "agent.fullname" . }}-down
+  labels:
+    {{- include "agent.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "agent.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.min }}
-  maxReplicas: {{ .Values.autoscaling.max }}
+  minReplicas: {{ .Values.agent.autoscaling.min }}
+  maxReplicas: {{ .Values.agent.autoscaling.max }}
   metrics:
     - type: External
       external:
         metric:
           name: occupied_agents_percentage
-          # selector:
-          #   matchLabels:
-          #     agent_type: {{ .Values.agent_type.name }}
+          selector:
+            matchLabels:
+              agent_type: {{ include "agent.fullname" . }}
         target:
           type: Value
-          value: 75
+          value: 100
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 60
@@ -36,13 +38,15 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "agent.fullname" . }}-up
+  labels:
+    {{- include "agent.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "agent.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.min }}
-  maxReplicas: {{ .Values.autoscaling.max }}
+  minReplicas: {{ .Values.agent.autoscaling.min }}
+  maxReplicas: {{ .Values.agent.autoscaling.max }}
   metrics:
     - type: External
       external:
@@ -50,7 +54,7 @@ spec:
           name: queued_jobs
           selector:
             matchLabels:
-              agent_type: {{ .Values.agent_type.name }}
+              agent_type: {{ include "agent.fullname" . }}
         target:
           type: Value
           value: 1
