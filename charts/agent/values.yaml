@@ -79,19 +79,3 @@ jobs:
 
   # Additional environment variables to expose to the Semaphore job pods.
   env: []
-
-  # Annotations to add to the Semaphore job pods.
-  annotations: {}
-
-  # Labels to add to the Semaphore job pods.
-  labels: {}
-
-  # The resources used in the Semaphore job pods.
-  # By default, no resources are specified, but specifying these is recommended.
-  resources:
-    # limits:
-    #   cpu: 1
-    #   memory: 1G
-    # requests:
-    #   cpu: 0.5
-    #   memory: 500m
