@@ -16,7 +16,7 @@ spec:
     - type: External
       external:
         metric:
-          name: occupied_agents_percentage
+          name: agents_occupied_percentage
           selector:
             matchLabels:
               agent_type: {{ include "agent.fullname" . }}
@@ -51,7 +51,7 @@ spec:
     - type: External
       external:
         metric:
-          name: queued_jobs
+          name: jobs_queued
           selector:
             matchLabels:
               agent_type: {{ include "agent.fullname" . }}
