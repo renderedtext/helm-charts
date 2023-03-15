@@ -21,8 +21,8 @@ spec:
       serviceAccountName: {{ include "agent.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.agent.image }}:{{ .Values.agent.imageTag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.agent.imagePullPolicy }}
           env:
             - name: KUBERNETES_NAMESPACE
               valueFrom:
