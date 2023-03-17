@@ -24,13 +24,7 @@ spec:
           type: Value
           value: 100
   behavior:
-    scaleDown:
-      stabilizationWindowSeconds: 60
-      selectPolicy: Max
-      policies:
-        - type: Pods
-          value: 2
-          periodSeconds: 10
+    scaleDown: {{ toYaml .Values.agent.autoscaling.scaleDown | nindent 6 }}
     scaleUp:
       selectPolicy: Disabled
 ---
@@ -61,14 +55,5 @@ spec:
   behavior:
     scaleDown:
       selectPolicy: Disabled
-    scaleUp:
-      stabilizationWindowSeconds: 20
-      selectPolicy: Max
-      policies:
-        - type: Pods
-          value: 2
-          periodSeconds: 20
-        - type: Percent
-          value: 100
-          periodSeconds: 20
+    scaleUp: {{ toYaml .Values.agent.autoscaling.scaleUp | nindent 6 }}
 {{- end }}
