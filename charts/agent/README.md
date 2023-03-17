@@ -83,7 +83,7 @@ agent:
           value: 5
           periodSeconds: 60
         - type: Percent
-          value: 5
+          value: 50
           periodSeconds: 60
 
     # The number of agents will be decreased by 25%, every 120s.
