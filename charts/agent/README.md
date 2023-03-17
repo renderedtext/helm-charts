@@ -44,7 +44,7 @@ helm upgrade --install my-second-agent-type-pool charts/agent \
 
 ## Autoscaling
 
-By default, the Semaphore agent deployment will scale up and down, based on the metrics exposed by the Semaphore API. It relies on the [custom Semaphore metrics server](https://github.com/renderedtext/k8s-metrics-apiserver) to be installed in the same namespace. You can use the [external-metrics-server](../external-metrics-server/README.md) chart to install it on your Kubernetes cluster.
+By default, the Semaphore agent deployment will scale up and down, based on the metrics exposed by the Semaphore API. It relies on the [custom Semaphore metrics server](https://github.com/renderedtext/k8s-metrics-apiserver) to be installed in the same namespace. You can use the [external-metrics-server](../external-metrics-server) chart to install it on your Kubernetes cluster.
 
 ### Disable autoscaling
 
