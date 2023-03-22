@@ -50,10 +50,10 @@ agent:
   resources:
     limits:
       cpu: 0.1
-      memory: 50m
+      memory: 50Mi
     requests:
       cpu: 0.05
-      memory: 25m
+      memory: 25Mi
 
   # NOTE: this requires the external-metrics-server chart to be installed.
   autoscaling:
