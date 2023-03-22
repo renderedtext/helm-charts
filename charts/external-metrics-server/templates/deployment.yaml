@@ -22,7 +22,7 @@ spec:
           args:
             - --secure-port=6443
             - --cert-dir=/var/run/serving-cert
-            - --v=10
+            - --v={{ .Values.logs.verbosity }}
           env:
             - name: KUBERNETES_NAMESPACE
               valueFrom:
