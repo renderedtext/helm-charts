@@ -33,6 +33,7 @@ spec:
               mountPath: "/opt/semaphore/semaphore-agent.yml"
               readOnly: true
               subPath: semaphore-agent.yml
+          resources: {{ toYaml .Values.agent.resources | nindent 12 }}
       volumes:
         - name: agent-config-volume
           secret:
