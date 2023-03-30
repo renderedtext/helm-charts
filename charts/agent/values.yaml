@@ -90,19 +90,4 @@ agent:
 # Configuration for the pods created by the  #
 # Semaphore agents to run the Semaphore jobs #
 ##############################################
-jobs:
-
-  # The Docker image used to run the job, if no containers are specified in the job YAML.
-  # If this is not specified, jobs that do not specify containers in their YAML (shell jobs) will not work.
-  image: ""
-
-  # The image pull policy used in Semaphore job pods.
-  imagePullPolicy: IfNotPresent
-
-  # The image pull secrets used in Semaphore job pods.
-  imagePullSecrets: []
-
-  # A list of key-value environment variables to expose to the Semaphore job pods.
-  env: []
-  # - VAR_1=VALUE_1
-  # - VAR_2=VALUE_2
+jobs: {}
