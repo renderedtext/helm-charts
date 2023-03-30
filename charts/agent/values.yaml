@@ -95,3 +95,13 @@ jobs:
   # List of regexes to apply on images used by jobs.
   # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#restricting-images-used-in-jobs
   allowedImages: []
+
+  # Additional configuration for the main container, sidecar containers and the pod itself.
+  # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#--kubernetes-pod-spec
+  podSpec:
+    mainContainer:
+      imagePullPolicy: IfNotPresent
+    sidecarContainers:
+      imagePullPolicy: IfNotPresent
+    pod:
+      imagePullSecrets: []

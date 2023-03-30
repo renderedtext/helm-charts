@@ -1,0 +1,21 @@
+{{- if .Values.jobs.podSpec }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "agent.podSpecName" . }}
+  labels:
+    {{- include "agent.labels" . | nindent 4 }}
+data:
+  {{- if .Values.jobs.podSpec.mainContainer }}
+  mainContainer: |
+{{ toYaml .Values.jobs.podSpec.mainContainer | indent 4 }}
+  {{- end }}
+  {{- if .Values.jobs.podSpec.sidecarContainers }}
+  sidecarContainers: |
+{{ toYaml .Values.jobs.podSpec.sidecarContainers | indent 4 }}
+  {{- end }}
+  {{- if .Values.jobs.podSpec.pod }}
+  pod: |
+{{ toYaml .Values.jobs.podSpec.pod | indent 4 }}
+  {{- end }}
+{{- end }}

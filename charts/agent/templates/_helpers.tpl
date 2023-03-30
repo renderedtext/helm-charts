@@ -59,3 +59,10 @@ Labels for the secret used to store the agent type information.
 semaphore-agent/autoscaled: "true"
 {{- end }}
 {{- end }}
+
+{{/*
+Expand the name of the pod spec config map.
+*/}}
+{{- define "agent.podSpecName" -}}
+{{ include "agent.fullname" . }}-pod-spec
+{{- end }}
