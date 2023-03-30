@@ -90,4 +90,8 @@ agent:
 # Configuration for the pods created by the  #
 # Semaphore agents to run the Semaphore jobs #
 ##############################################
-jobs: {}
+jobs:
+
+  # List of regexes to apply on images used by jobs.
+  # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#restricting-images-used-in-jobs
+  allowedImages: []
