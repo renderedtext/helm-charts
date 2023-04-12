@@ -8,6 +8,9 @@ nameOverride: ""
 # Override the fully qualified app name.
 fullnameOverride: ""
 
+image: "semaphoreci/metrics-apiserver"
+imageTag: ""
+
 # Configures log verbosity for logs
 # See: https://github.com/kubernetes/klog
 logs:

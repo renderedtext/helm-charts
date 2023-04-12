@@ -18,7 +18,7 @@ spec:
       serviceAccountName: {{ include "metricsServer.name" . }}
       containers:
         - name: server
-          image: semaphoreci/metrics-apiserver
+          image: "{{ .Values.image }}:{{ .Values.imageTag | default .Chart.AppVersion }}"
           args:
             - --secure-port=6443
             - --cert-dir=/var/run/serving-cert
