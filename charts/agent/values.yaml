@@ -113,6 +113,9 @@ jobs:
     toolboxVersion: "v1.19.40"
     failOnError: true
     script: |
+      set -eo pipefail
+
+      # Install the Semaphore toolbox in the job
       rm -rf ~/.toolbox
       downloadPath="https://github.com/semaphoreci/toolbox/releases/download/{{ .Values.jobs.preJobHook.toolboxVersion }}/self-hosted-linux.tar"
       echo "Installing Semaphore toolbox from $downloadPath..."
@@ -122,3 +125,9 @@ jobs:
       bash ~/.toolbox/install-toolbox
       source ~/.toolbox/toolbox
       echo "Semaphore toolbox successfully installed."
+
+      # Configure SSH
+      mkdir -p ~/.ssh
+      echo 'Host github.com' | tee -a ~/.ssh/config
+      echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
+      echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
