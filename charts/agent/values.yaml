@@ -109,8 +109,9 @@ jobs:
   # If enabled, we store the script in a secret, and inject it into the pod running job for execution.
   preJobHook:
     enabled: true
-    path: "/opt/semaphore/hooks/pre-job"
+    path: "/opt/semaphore/hooks"
     toolboxVersion: "v1.19.40"
+    failOnError: true
     script: |
       rm -rf ~/.toolbox
       downloadPath="https://github.com/semaphoreci/toolbox/releases/download/{{ .Values.jobs.preJobHook.toolboxVersion }}/self-hosted-linux.tar"

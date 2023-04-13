@@ -74,7 +74,7 @@ If preJobHook is used, we need to modify it to include the hook mount.
 {{- define "agent.job.podSpec.mainContainer" -}}
 {{- if .Values.jobs.preJobHook.enabled }}
 {{- $mainContainerSpec := deepCopy .Values.jobs.podSpec.mainContainer }}
-{{- $preJobHookMount := dict "name" "agent-config-volume" "mountPath" .Values.jobs.preJobHook.path "readOnly" true "subPath" "pre-job-hook" }}
+{{- $preJobHookMount := dict "name" "agent-config-volume" "mountPath" .Values.jobs.preJobHook.path "readOnly" true }}
 {{- $currentVolumeMounts := $mainContainerSpec.volumeMounts | default list }}
 {{- $newVolumeMounts := append $currentVolumeMounts $preJobHookMount }}
 {{- $_ := set $mainContainerSpec "volumeMounts" $newVolumeMounts }}
