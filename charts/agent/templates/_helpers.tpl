@@ -66,3 +66,39 @@ Expand the name of the pod spec config map.
 {{- define "agent.podSpecName" -}}
 {{ include "agent.fullname" . }}-pod-spec
 {{- end }}
+
+{{/*
+Define the main container configuration.
+If preJobHook is used, we need to modify it to include the hook mount.
+*/}}
+{{- define "agent.job.podSpec.mainContainer" -}}
+{{- if .Values.jobs.preJobHook.enabled }}
+{{- $mainContainerSpec := deepCopy .Values.jobs.podSpec.mainContainer }}
+{{- $preJobHookMount := dict "name" "agent-config-volume" "mountPath" .Values.jobs.preJobHook.path "readOnly" true }}
+{{- $currentVolumeMounts := $mainContainerSpec.volumeMounts | default list }}
+{{- $newVolumeMounts := append $currentVolumeMounts $preJobHookMount }}
+{{- $_ := set $mainContainerSpec "volumeMounts" $newVolumeMounts }}
+{{- toYaml $mainContainerSpec }}
+{{- else }}
+{{- toYaml .Values.jobs.podSpec.mainContainer }}
+{{- end }}
+{{- end }}
+
+{{/*
+Define the pod configuration.
+If preJobHook is used, we need to modify it to include the hook mount.
+*/}}
+{{- define "agent.job.podSpec.pod" -}}
+{{- if .Values.jobs.preJobHook.enabled }}
+{{- $podSpec := deepCopy .Values.jobs.podSpec.pod }}
+{{- $secretItem := dict "key" "pre-job-hook" "path" "pre-job-hook" }}
+{{- $secretDict := dict "secretName" (include "agent.fullname" .) "defaultMode" 0644 "items" (list $secretItem) }}
+{{- $preJobHookVolume := dict "name" "agent-config-volume" "secret" $secretDict }}
+{{- $currentVolumes := $podSpec.volumes | default list }}
+{{- $newVolumes := append $currentVolumes $preJobHookVolume }}
+{{- $_ := set $podSpec "volumes" $newVolumes }}
+{{- toYaml $podSpec }}
+{{- else }}
+{{- toYaml .Values.jobs.podSpec.pod }}
+{{- end }}
+{{- end }}

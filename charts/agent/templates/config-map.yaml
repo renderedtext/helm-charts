@@ -6,16 +6,10 @@ metadata:
   labels:
     {{- include "agent.labels" . | nindent 4 }}
 data:
-  {{- if .Values.jobs.podSpec.mainContainer }}
   mainContainer: |
-{{ toYaml .Values.jobs.podSpec.mainContainer | indent 4 }}
-  {{- end }}
-  {{- if .Values.jobs.podSpec.sidecarContainers }}
+{{ include "agent.job.podSpec.mainContainer" . | indent 4 }}
   sidecarContainers: |
 {{ toYaml .Values.jobs.podSpec.sidecarContainers | indent 4 }}
-  {{- end }}
-  {{- if .Values.jobs.podSpec.pod }}
   pod: |
-{{ toYaml .Values.jobs.podSpec.pod | indent 4 }}
-  {{- end }}
+{{ include "agent.job.podSpec.pod" . | indent 4 }}
 {{- end }}

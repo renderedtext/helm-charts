@@ -99,9 +99,16 @@ jobs:
   # Additional configuration for the main container, sidecar containers and the pod itself.
   # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#--kubernetes-pod-spec
   podSpec:
-    mainContainer:
-      imagePullPolicy: IfNotPresent
-    sidecarContainers:
-      imagePullPolicy: IfNotPresent
-    pod:
-      imagePullSecrets: []
+    mainContainer: {}
+    sidecarContainers: {}
+    pod: {}
+
+  # The pre-job hook configuration.
+  # See: https://docs.semaphoreci.com/ci-cd-environment/configure-self-hosted-agent/#pre-job-hook-path.
+  # By default, this is enabled, and we use that hook to install the Semaphore toolbox.
+  # If enabled, we store the script in a secret, and inject it into the pod running job for execution.
+  preJobHook:
+    enabled: true
+    path: "/opt/semaphore/hooks"
+    failOnError: true
+    customScript: ""
