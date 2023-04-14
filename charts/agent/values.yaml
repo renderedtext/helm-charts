@@ -110,6 +110,5 @@ jobs:
   preJobHook:
     enabled: true
     path: "/opt/semaphore/hooks"
-    toolboxVersion: "v1.19.40"
     failOnError: true
     customScript: ""
