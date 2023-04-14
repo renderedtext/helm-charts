@@ -126,7 +126,9 @@ jobs:
       source ~/.toolbox/toolbox
       echo "Semaphore toolbox successfully installed."
 
-      # Configure SSH
+      # Create SSH configuration.
+      # This is required in order to avoid having to manually accept the GitHub SSH keys fingerprints on checkout.
+      # Ideally, we should populate ~/.ssh/known_hosts with the GitHub keys from api.github.com/meta.
       mkdir -p ~/.ssh
       echo 'Host github.com' | tee -a ~/.ssh/config
       echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
