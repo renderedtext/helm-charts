@@ -5,6 +5,9 @@ Install one or multiple [Semaphore agent](https://github.com/semaphoreci/agent) 
 - [Autoscaling](#autoscaling)
   - [Disable autoscaling](#disable-autoscaling)
   - [Configure autoscaling policies](#configure-autoscaling-policies)
+- [Using a pre-job hook](#using-a-pre-job-hook)
+  - [Disabling the pre-job hook](#disabling-the-pre-job-hook)
+  - [Using a custom pre-job hook](#using-a-custom-pre-job-hook)
 
 ## Installation
 
@@ -103,4 +106,34 @@ helm upgrade --install semaphore-agent charts/agent \
   --namespace semaphore \
   --create-namespace \
   -f values.yml
+```
+
+## Using a pre-job hook
+
+By default, a pre-job hook is used to install the Semaphore toolbox. However, we recommend pre-installing the Semaphore toolbox (and any other required tools for your builds) in the images used during the jobs, to avoid wasting job running time to install dependencies.
+
+### Disabling the pre-job hook
+
+If you do not want to use the default pre-job hook, you can disable it with the `jobs.preJobHook.enabled` value:
+
+```
+helm upgrade --install brand-new-type charts/agent \
+  --namespace semaphore \
+  --create-namespace \
+  --set agent.endpoint=<your-organization>.semaphoreci.com \
+  --set agent.token=<your-agent-type-registration-token> \
+  --set jobs.preJobHook.enabled=false
+```
+
+### Using a custom pre-job hook
+
+If the default pre-job hook does not fit your needs, you can use a custom one with the `jobs.preJobHook.customScript` value:
+
+```
+helm upgrade --install brand-new-type charts/agent \
+  --namespace semaphore \
+  --create-namespace \
+  --set agent.endpoint=<your-organization>.semaphoreci.com \
+  --set agent.token=<your-agent-type-registration-token> \
+  --set jobs.preJobHook.customScript=$(cat my-custom-script.sh | base64)
 ```
