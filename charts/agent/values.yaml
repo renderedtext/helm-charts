@@ -55,6 +55,11 @@ agent:
       cpu: 0.05
       memory: 25Mi
 
+  # The number of replicas for the agent deployment.
+  # This is used if agent.autoscaling.enabled is not true.
+  # If agent.autoscaling.enabled is true, agent.autoscaling.min is used instead.
+  replicas: 1
+
   # NOTE: this requires the external-metrics-server chart to be installed.
   autoscaling:
     enabled: true

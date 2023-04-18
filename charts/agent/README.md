@@ -3,6 +3,7 @@ Install one or multiple [Semaphore agent](https://github.com/semaphoreci/agent) 
 - [Installation](#installation)
   - [Using multiple agent type pools](#using-multiple-agent-type-pools)
 - [Autoscaling](#autoscaling)
+  - [Configure agent pool size](#configure-agent-pool-size)
   - [Disable autoscaling](#disable-autoscaling)
   - [Configure autoscaling policies](#configure-autoscaling-policies)
 - [Using a pre-job hook](#using-a-pre-job-hook)
@@ -49,9 +50,9 @@ helm upgrade --install my-second-agent-type-pool charts/agent \
 
 By default, the Semaphore agent deployment will scale up and down, based on the metrics exposed by the Semaphore API. It relies on the [custom Semaphore metrics server](https://github.com/renderedtext/k8s-metrics-apiserver) to be installed in the same namespace. You can use the [external-metrics-server](../external-metrics-server) chart to install it on your Kubernetes cluster.
 
-### Disable autoscaling
+### Configure agent pool size
 
-If you don't want the agent deployment to automatically scale, you can disable it:
+By default, the agent pool will have a minimum of 1 agent and a maximum of 10 agents. However, you can configure it with the `agent.autoscaling.min` and `agent.autoscaling.max` values. For example, to create an agent pool that has between 5 and 25 agents:
 
 ```
 helm install semaphore-agent charts/agent \
@@ -59,7 +60,22 @@ helm install semaphore-agent charts/agent \
   --create-namespace \
   --set agent.endpoint=<your-organization>.semaphoreci.com \
   --set agent.token=<your-agent-type-registration-token> \
-  --set autoscaling.enabled=false
+  --set agent.autoscaling.min=5 \
+  --set agent.autoscaling.max=25
+```
+
+### Disable autoscaling
+
+If you don't want the agent deployment to automatically scale, you can disable it with the `agent.autoscaling.enabled` value. Also, if autoscaling is not enabled, the number of agents is configured with the `agent.replicas` value. For example, you can install a static agent pool of 25 agents with the following:
+
+```
+helm install semaphore-agent charts/agent \
+  --namespace semaphore \
+  --create-namespace \
+  --set agent.endpoint=<your-organization>.semaphoreci.com \
+  --set agent.token=<your-agent-type-registration-token> \
+  --set agent.autoscaling.enabled=false \
+  --set agent.replicas=25
 ```
 
 ### Configure autoscaling policies

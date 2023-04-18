@@ -5,7 +5,11 @@ metadata:
   labels:
     {{- include "agent.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  {{- if .Values.agent.autoscaling.enabled }}
+  replicas: {{ .Values.agent.autoscaling.min }}
+  {{- else }}
+  replicas: {{ .Values.agent.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "agent.selectorLabels" . | nindent 6 }}
