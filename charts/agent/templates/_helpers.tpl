@@ -102,3 +102,12 @@ If preJobHook is used, we need to modify it to include the hook mount.
 {{- toYaml .Values.jobs.podSpec.pod }}
 {{- end }}
 {{- end }}
+
+{{/*
+Define the agent deployment's grace period.
+We use interruptionGracePeriod + 5 minutes here to make sure the agent
+has enough time to stop and finish the job if the job doesn't finish in time.
+*/}}
+{{- define "agent.gracePeriod" -}}
+{{- add .Values.agent.interruptionGracePeriod 120 }}
+{{- end }}

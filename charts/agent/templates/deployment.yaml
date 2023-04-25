@@ -23,6 +23,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "agent.fullname" . }}
+      terminationGracePeriodSeconds: {{ include "agent.gracePeriod" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.agent.image }}:{{ .Values.agent.imageTag | default .Chart.AppVersion }}"
