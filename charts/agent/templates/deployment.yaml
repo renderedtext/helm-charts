@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "agent.labels" . | nindent 4 }}
 spec:
-  {{- if .Values.agent.autoscaling.enabled }}
-  replicas: {{ .Values.agent.autoscaling.min }}
-  {{- else }}
+  {{- if not .Values.agent.autoscaling.enabled }}
   replicas: {{ .Values.agent.replicas }}
   {{- end }}
   selector:
