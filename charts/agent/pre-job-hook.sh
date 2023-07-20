@@ -1,14 +1,29 @@
-set -eo pipefail
-
 # Install the Semaphore toolbox in the job
 rm -rf ~/.toolbox
+
 downloadPath="https://github.com/semaphoreci/toolbox/releases/download/v1.19.40/self-hosted-linux.tar"
-echo "Installing Semaphore toolbox from $downloadPath..."
+echo "Downloading Semaphore toolbox from $downloadPath..."
 curl -sL --retry 5 --connect-timeout 3 $downloadPath -o /tmp/toolbox.tar
 tar -xvf /tmp/toolbox.tar
 mv toolbox ~/.toolbox
+if [ ! -d ~/.toolbox ]; then
+  echo "Failed to download toolbox."
+  return 1
+fi
+
+echo "Installing..."
 bash ~/.toolbox/install-toolbox
+if [ "$?" -ne "0" ]; then
+  echo "Failed to install toolbox."
+  rm -rf $SEMAPHORE_GIT_DIR
+fi
+
 source ~/.toolbox/toolbox
+if [ "$?" -ne "0" ]; then
+  echo "Failed to source toolbox."
+  rm -rf $SEMAPHORE_GIT_DIR
+fi
+
 echo "Semaphore toolbox successfully installed."
 
 # Create SSH configuration.
