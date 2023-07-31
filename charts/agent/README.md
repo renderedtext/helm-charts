@@ -81,8 +81,8 @@ helm install semaphore-agent charts/agent \
 ### Configure autoscaling policies
 
 By default, the HPA will behave the following way:
-- When scaling up, the number of agents will be either doubled, or increased by 2, whichever is greatest, every 30s.
-- When scaling down, the number of agents will be decreased by 1, every 60s.
+- If jobs are in the queue, the number of agents will be increased by 200% or by 10, whichever is greatest, every 30s.
+- If some agents are idle, the number of agents will be decreased by 1, every 5 minutes.
 
 However, you can configure both behaviors by overriding the default values. For example, here's an example `values.yml` to override the default behaviors:
 
