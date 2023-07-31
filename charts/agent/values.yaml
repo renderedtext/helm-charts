@@ -21,10 +21,10 @@ agent:
   token: ""
 
   # Controls how long the Semaphore agent waits before stopping a job
-  # it is currently running when it receives an interruption signal from Kubernetes.
-  # Usually, the agent would receive an interruption signal from Kubernetes
-  # when the HorizontalPodAutoscaler decides to scale down the number of agents running.
-  interruptionGracePeriod: 300
+  # it is currently running when it receives an interruption signal
+  # from Kubernetes (HPA scaling down the agent deployment).
+  # By default, this is 1h.
+  interruptionGracePeriod: 3600
 
   # The Docker image used to run the agents.
   image: semaphoreci/agent
@@ -67,29 +67,29 @@ agent:
     max: 10
 
     # Controls the HPA's scaleUp behavior, and controls how fast agents are scaled up.
-    # By default, we either double the number of pods or increase it by 2, whatever is greatest, every 30s.
+    # By default, we either increase the number of pods by 200% or by 10, whatever is greatest, every 30s.
     # See: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
     scaleUp:
       selectPolicy: Max
       stabilizationWindowSeconds: 60
       policies:
         - type: Pods
-          value: 2
+          value: 10
           periodSeconds: 30
         - type: Percent
-          value: 100
+          value: 200
           periodSeconds: 30
 
     # Controls the HPA's scaleDown behavior, and controls how fast agents are scaled down.
-    # By default, we always decrease the number of agents by 1, every minute.
+    # By default, if there are idle agents, we decrease the number of agents by 1, every 5 minutes.
     # See: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
     scaleDown:
-      stabilizationWindowSeconds: 60
+      stabilizationWindowSeconds: 300
       selectPolicy: Max
       policies:
         - type: Pods
           value: 1
-          periodSeconds: 60
+          periodSeconds: 300
 
 ##############################################
 # Configuration for the pods created by the  #
