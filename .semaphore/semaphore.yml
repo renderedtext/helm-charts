@@ -1,0 +1,14 @@
+version: v1.0
+name: Pipeline
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: Lint
+    task:
+      jobs:
+        - name: Lint
+          commands:
+            - checkout
+            - make helm.lint
