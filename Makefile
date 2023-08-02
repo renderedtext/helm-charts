@@ -1,9 +1,8 @@
-PKG_LOCAL_DIR=.pkg
 GIT_REPO_OWNER=renderedtext
 GIT_REPO=helm-charts
 
 helm.package:
-	helm package charts/* -d $(PKG_LOCAL_DIR)
+	cr package charts/*
 
 helm.lint:
 	helm lint charts/*
@@ -12,19 +11,15 @@ helm.upload:
 	cr upload \
 		--owner $(GIT_REPO_OWNER) \
 		--git-repo $(GIT_REPO) \
-		--package-path $(PKG_LOCAL_DIR) \
 		--token $$GITHUB_TOKEN \
-		--packages-with-index \
-		--skip-existing \
-		--push
+		--skip-existing
 
 helm.index:
+	git remote set-url origin https://github.com/$(GIT_REPO_OWNER)/$(GIT_REPO)
 	cr index \
 		--owner $(GIT_REPO_OWNER) \
 		--git-repo $(GIT_REPO) \
-		--package-path $(PKG_LOCAL_DIR) \
 		--token $$GITHUB_TOKEN \
-		--packages-with-index \
 		--index-path . \
 		--push
 
