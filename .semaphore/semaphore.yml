@@ -1,9 +1,11 @@
 version: v1.0
 name: Pipeline
+
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu2004
+
 blocks:
   - name: Lint
     task:
@@ -12,3 +14,7 @@ blocks:
           commands:
             - checkout
             - make helm.lint
+
+promotions:
+  - name: "Release"
+    pipeline_file: "release.yml"
