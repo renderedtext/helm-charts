@@ -10,6 +10,7 @@ blocks:
       jobs:
       - name: Execute chart-releaser
         commands:
+          - checkout
           - make cr.install
           - make helm.package
           - make helm.upload
