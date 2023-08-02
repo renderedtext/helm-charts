@@ -1,5 +1,7 @@
 GIT_REPO_OWNER=renderedtext
 GIT_REPO=helm-charts
+GIT_USER_EMAIL=lpinheiro@renderedtext.com
+GIT_USER_NAME=Lucas Pinheiro
 
 helm.package:
 	cr package charts/*
@@ -15,6 +17,8 @@ helm.upload:
 		--skip-existing
 
 helm.index:
+	git config --global user.email "$(GIT_USER_EMAIL)"
+	git config --global user.name "$(GIT_USER_NAME)"
 	git remote set-url origin https://github.com/$(GIT_REPO_OWNER)/$(GIT_REPO)
 	cr index \
 		--owner $(GIT_REPO_OWNER) \

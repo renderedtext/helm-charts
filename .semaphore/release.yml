@@ -10,7 +10,8 @@ blocks:
       jobs:
         - name: Execute chart-releaser
           commands:
-            - checkout
+            - git clone $SEMAPHORE_GIT_URL $SEMAPHORE_GIT_DIR
+            - cd $SEMAPHORE_GIT_DIR
             - make cr.install
             - make helm.package
             - make helm.upload
