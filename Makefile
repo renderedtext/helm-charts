@@ -13,7 +13,7 @@ helm.upload:
 		--owner $(GIT_REPO_OWNER) \
 		--git-repo $(GIT_REPO) \
 		--package-path $(PKG_LOCAL_DIR) \
-		--token $(GITHUB_TOKEN) \
+		--token $$GITHUB_TOKEN \
 		--packages-with-index \
 		--skip-existing \
 		--push
@@ -23,7 +23,7 @@ helm.index:
 		--owner $(GIT_REPO_OWNER) \
 		--git-repo $(GIT_REPO) \
 		--package-path $(PKG_LOCAL_DIR) \
-		--token $(GITHUB_TOKEN) \
+		--token $$GITHUB_TOKEN \
 		--packages-with-index \
 		--index-path . \
 		--push
