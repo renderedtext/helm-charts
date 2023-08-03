@@ -9,6 +9,7 @@ Install one or multiple [Semaphore agent](https://github.com/semaphoreci/agent) 
 - [Using a pre-job hook](#using-a-pre-job-hook)
   - [Disabling the pre-job hook](#disabling-the-pre-job-hook)
   - [Using a custom pre-job hook](#using-a-custom-pre-job-hook)
+- [Configuration](#configuration)
 
 ## Installation
 
@@ -16,7 +17,13 @@ Install one or multiple [Semaphore agent](https://github.com/semaphoreci/agent) 
 
 You can follow the guide [here](https://docs.semaphoreci.com/ci-cd-environment/self-hosted-agent-types/).
 
-<b>2. Install chart.</b>
+<b>2. Add the helm repository</b>
+
+```bash
+helm repo add renderedtext https://renderedtext.github.io/helm-charts
+```
+
+<b>3. Install chart.</b>
 
 Using the registration token generated for the agent type you created, install the chart:
 
@@ -132,7 +139,7 @@ By default, a pre-job hook is used to install the Semaphore toolbox. However, we
 
 If you do not want to use the default pre-job hook, you can disable it with the `jobs.preJobHook.enabled` value:
 
-```
+```bash
 helm upgrade --install brand-new-type charts/agent \
   --namespace semaphore \
   --create-namespace \
@@ -145,7 +152,7 @@ helm upgrade --install brand-new-type charts/agent \
 
 If the default pre-job hook does not fit your needs, you can use a custom one with the `jobs.preJobHook.customScript` value:
 
-```
+```bash
 helm upgrade --install brand-new-type charts/agent \
   --namespace semaphore \
   --create-namespace \
@@ -153,3 +160,7 @@ helm upgrade --install brand-new-type charts/agent \
   --set agent.token=<your-agent-type-registration-token> \
   --set jobs.preJobHook.customScript=$(cat my-custom-script.sh | base64)
 ```
+
+## Configuration
+
+All the available configuration values can be seen with `helm show values renderedtext/agent`.
