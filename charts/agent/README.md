@@ -9,6 +9,7 @@ Install one or multiple [Semaphore agent](https://github.com/semaphoreci/agent) 
 - [Using a pre-job hook](#using-a-pre-job-hook)
   - [Disabling the pre-job hook](#disabling-the-pre-job-hook)
   - [Using a custom pre-job hook](#using-a-custom-pre-job-hook)
+- [Logging](#logging)
 - [Configuration](#configuration)
 
 ## Installation
@@ -160,6 +161,10 @@ helm upgrade --install brand-new-type charts/agent \
   --set agent.token=<your-agent-type-registration-token> \
   --set jobs.preJobHook.customScript=$(cat my-custom-script.sh | base64)
 ```
+
+## Logging
+
+Since agent pods are deleted by the autoscaler when scaling down, it is recommended to configure your Kubernetes cluster to stream the agent pod logs to an external place, to help with troubleshooting, if needed. [This guide](https://kubernetes.io/docs/concepts/cluster-administration/logging/#cluster-level-logging-architectures) describes the usual strategies to accomplish that.
 
 ## Configuration
 
