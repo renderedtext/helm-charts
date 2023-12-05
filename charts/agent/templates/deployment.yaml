@@ -40,6 +40,10 @@ spec:
               mountPath: "/opt/semaphore/semaphore-agent.yml"
               readOnly: true
               subPath: semaphore-agent.yml
+            - name: shutdown-hook-volume
+              mountPath: "/opt/semaphore/shutdown-hook"
+              readOnly: true
+              subPath: shutdown-hook
           resources: {{ toYaml .Values.agent.resources | nindent 12 }}
       volumes:
         - name: agent-config-volume
@@ -49,3 +53,10 @@ spec:
             items:
             - key: semaphore-agent.yml
               path: semaphore-agent.yml
+        - name: shutdown-hook-volume
+          secret:
+            secretName: {{ include "agent.fullname" . }}
+            defaultMode: 0644
+            items:
+            - key: shutdown-hook
+              path: shutdown-hook

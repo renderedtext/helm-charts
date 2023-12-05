@@ -6,40 +6,7 @@ apiVersion: autoscaling/v2beta2
 {{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "agent.fullname" . }}-down
-  labels:
-    {{- include "agent.labels" . | nindent 4 }}
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: {{ include "agent.fullname" . }}
-  minReplicas: {{ .Values.agent.autoscaling.min }}
-  maxReplicas: {{ .Values.agent.autoscaling.max }}
-  metrics:
-    - type: External
-      external:
-        metric:
-          name: agents_occupied_percentage
-          selector:
-            matchLabels:
-              agent_type: {{ include "agent.fullname" . }}
-        target:
-          type: Value
-          value: 100
-  behavior:
-    scaleDown: {{ toYaml .Values.agent.autoscaling.scaleDown | nindent 6 }}
-    scaleUp:
-      selectPolicy: Disabled
----
-{{- if .Capabilities.APIVersions.Has "autoscaling/v2" }}
-apiVersion: autoscaling/v2
-{{- else }}
-apiVersion: autoscaling/v2beta2
-{{- end }}
-kind: HorizontalPodAutoscaler
-metadata:
-  name: {{ include "agent.fullname" . }}-up
+  name: {{ include "agent.fullname" . }}
   labels:
     {{- include "agent.labels" . | nindent 4 }}
 spec:
