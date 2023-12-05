@@ -80,17 +80,6 @@ agent:
           value: 200
           periodSeconds: 30
 
-    # Controls the HPA's scaleDown behavior, and controls how fast agents are scaled down.
-    # By default, if there are idle agents, we decrease the number of agents by 1, every 5 minutes.
-    # See: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
-    scaleDown:
-      stabilizationWindowSeconds: 300
-      selectPolicy: Max
-      policies:
-        - type: Pods
-          value: 1
-          periodSeconds: 300
-
 ##############################################
 # Configuration for the pods created by the  #
 # Semaphore agents to run the Semaphore jobs #

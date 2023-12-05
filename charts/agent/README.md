@@ -88,11 +88,7 @@ helm install semaphore-agent charts/agent \
 
 ### Configure autoscaling policies
 
-By default, the HPA will behave the following way:
-- If jobs are in the queue, the number of agents will be increased by 200% or by 10, whichever is greatest, every 30s.
-- If some agents are idle, the number of agents will be decreased by 1, every 5 minutes.
-
-However, you can configure both behaviors by overriding the default values. For example, here's an example `values.yml` to override the default behaviors:
+By default, the HPA will behave the following way: If jobs are in the queue, the number of agents will be increased by 200% or by 10, whichever is greatest, every 30s. However, you can configure that behavior by overriding the default value. For example, here's an example `values.yml` to override the default behavior:
 
 ```yaml
 agent:
@@ -112,15 +108,6 @@ agent:
         - type: Percent
           value: 50
           periodSeconds: 60
-
-    # The number of agents will be decreased by 25%, every 120s.
-    scaleDown:
-      selectPolicy: Max
-      stabilizationWindowSeconds: 60
-      policies:
-        - type: Percent
-          value: 25
-          periodSeconds: 120
 ```
 
 You can apply that when installing/upgrading the agent installation:
