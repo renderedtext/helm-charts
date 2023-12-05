@@ -20,7 +20,7 @@ spec:
     - type: External
       external:
         metric:
-          name: jobs_queued
+          name: jobs_total
           selector:
             matchLabels:
               agent_type: {{ include "agent.fullname" . }}
