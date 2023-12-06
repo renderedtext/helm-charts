@@ -4,6 +4,15 @@ if [[ $SEMAPHORE_AGENT_SHUTDOWN_REASON != "IDLE" ]]; then
   exit 0
 fi
 
+if [[ -z $KUBERNETES_DEPLOYMENT_NAME || -z $KUBERNETES_NAMESPACE || -z $KUBERNETES_POD_NAME || -z $KUBERNETES_DEPLOYMENT_MIN_SIZE ]]; then
+  echo "Some environment variables were not specified."
+  echo "KUBERNETES_NAMESPACE: $KUBERNETES_NAMESPACE"
+  echo "KUBERNETES_DEPLOYMENT_NAME: $KUBERNETES_DEPLOYMENT_NAME"
+  echo "KUBERNETES_POD_NAME: $KUBERNETES_POD_NAME"
+  echo "KUBERNETES_DEPLOYMENT_MIN_SIZE: $KUBERNETES_DEPLOYMENT_MIN_SIZE"
+  exit 1
+fi
+
 # We trap the script exit to ensure we always
 # release the lock (if needed) after the scripts exits.
 on_exit() {
@@ -44,8 +53,7 @@ retry_cmd() {
 }
 
 # If the agent is idle, we:
-# 1. Synchronouly lock the deployment. We use an annotation for this. If another shutdown hook has already locked it, we retry for a while.
-#    If after retrying, we can't lock it, we let agent shutdown, and Kubernetes restart it.
+# 1. Synchronouly lock the deployment. If another shutdown hook has already locked it, we retry for a while, and eventually give up.
 # 2. Annotate the agent pod with a pod deletion cost.
 # 3. Decrease the deployment replica count.
 # 4. Release the deployment lock.
@@ -61,17 +69,18 @@ lock_deployment() {
   fi
 }
 
-# Get the deployment name from the pod metadata labels.
-# TODO: pass this through the downward API as an environment variable too.
-export KUBERNETES_DEPLOYMENT_NAME=$(kubectl get -n $KUBERNETES_NAMESPACE pod/$KUBERNETES_POD_NAME -o jsonpath='{.metadata.labels.app\.kubernetes\.io/name}')
-echo "Found deployment: $KUBERNETES_DEPLOYMENT_NAME"
-
 lock_deployment $KUBERNETES_DEPLOYMENT_NAME $KUBERNETES_POD_NAME
 if [ $? -eq 0 ]; then
   KUBERNETES_DEPLOYMENT_REPLICAS=$(kubectl get -n $KUBERNETES_NAMESPACE deployment/$KUBERNETES_DEPLOYMENT_NAME -o jsonpath='{.status.replicas}')
   echo "Current replica count: $KUBERNETES_DEPLOYMENT_REPLICAS"
   KUBERNETES_DEPLOYMENT_NEW_REPLICAS=$((KUBERNETES_DEPLOYMENT_REPLICAS - 1))
   echo "New replica count: $KUBERNETES_DEPLOYMENT_NEW_REPLICAS"
+
+  # We don't scale down if we are already at the minimum.
+  if [[ "$KUBERNETES_DEPLOYMENT_NEW_REPLICAS" -lt "$KUBERNETES_DEPLOYMENT_MIN_SIZE"]]; then
+    echo "New replica count is below minimum allowed - not scaling down."
+    exit 0
+  fi
 
   echo "Annotating pod $KUBERNETES_POD_NAME..."
   kubectl annotate pod $KUBERNETES_POD_NAME controller.kubernetes.io/pod-deletion-cost=-1

@@ -35,6 +35,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: KUBERNETES_DEPLOYMENT_NAME
+              value: {{ include "agent.fullname" . }}
+            - name: KUBERNETES_DEPLOYMENT_MIN_SIZE
+              value: "{{ .Values.agent.autoscaling.min }}"
           volumeMounts:
             - name: agent-config-volume
               mountPath: "/opt/semaphore/semaphore-agent.yml"
