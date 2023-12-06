@@ -66,6 +66,10 @@ agent:
     min: 1
     max: 10
 
+    # The deployment will be scaled down every time an agent becomes idle.
+    # By default, agents become idle after 30m of waiting for jobs, and not getting any.
+    idleTimeoutForScaleDown: 1800
+
     # Controls the HPA's scaleUp behavior, and controls how fast agents are scaled up.
     # By default, we either increase the number of pods by 200% or by 10, whatever is greatest, every 30s.
     # See: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
