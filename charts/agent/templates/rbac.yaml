@@ -17,7 +17,7 @@ rules:
     verbs: ["get", "create", "patch", "delete"]
   - apiGroups: ["apps"]
     resources: ["deployments"]
-    verbs: ["get"]
+    verbs: ["get", "patch"]
   - apiGroups: ["apps"]
     resources: ["deployments/scale"]
     verbs: ["patch"]
