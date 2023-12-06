@@ -13,15 +13,19 @@ if [[ -z $KUBERNETES_DEPLOYMENT_NAME || -z $KUBERNETES_NAMESPACE || -z $KUBERNET
   exit 1
 fi
 
+log() {
+  echo "[$(date --utc +%FT%T.%3NZ)] : $1"
+}
+
 # We trap the script exit to ensure we always
 # release the lock (if needed) after the scripts exits.
 on_exit() {
   local __lock_value__=$(kubectl get -n $KUBERNETES_NAMESPACE deployment/$KUBERNETES_DEPLOYMENT_NAME -o jsonpath='{.metadata.annotations.semaphoreci\.com/handle}')
   if [[ "$__lock_value__" == "$KUBERNETES_POD_NAME" ]]; then
-    echo "Removing lock from deployment $KUBERNETES_DEPLOYMENT_NAME..."
+    log "Removing lock from deployment $KUBERNETES_DEPLOYMENT_NAME..."
     kubectl annotate -n $KUBERNETES_NAMESPACE deployment/$KUBERNETES_DEPLOYMENT_NAME semaphoreci.com/handle-
   else
-    echo "Deployment lock ($__lock_value__) does not match $KUBERNETES_POD_NAME."
+    log "Deployment lock ($__lock_value__) does not match $KUBERNETES_POD_NAME."
   fi
 }
 
@@ -39,7 +43,7 @@ retry_cmd() {
     __result__="$?"
 
     if [ $__result__ -eq "0" ]; then
-      echo $__output__
+      log $__output__
       return 0
     fi
 
@@ -61,10 +65,10 @@ retry_cmd() {
 lock_deployment() {
   retry_cmd "kubectl annotate -n $KUBERNETES_NAMESPACE deployment/$KUBERNETES_DEPLOYMENT_NAME semaphoreci.com/handle=$KUBERNETES_POD_NAME"
   if [ $? -eq 0 ]; then
-    echo "Deployment locked."
+    log "Deployment locked."
     return 0
   else
-    echo "Could not lock deployment."
+    log "Could not lock deployment."
     return 1
   fi
 }
@@ -72,19 +76,23 @@ lock_deployment() {
 lock_deployment $KUBERNETES_DEPLOYMENT_NAME $KUBERNETES_POD_NAME
 if [ $? -eq 0 ]; then
   KUBERNETES_DEPLOYMENT_REPLICAS=$(kubectl get -n $KUBERNETES_NAMESPACE deployment/$KUBERNETES_DEPLOYMENT_NAME -o jsonpath='{.status.replicas}')
-  echo "Current replica count: $KUBERNETES_DEPLOYMENT_REPLICAS"
+  log "Current replica count: $KUBERNETES_DEPLOYMENT_REPLICAS"
   KUBERNETES_DEPLOYMENT_NEW_REPLICAS=$((KUBERNETES_DEPLOYMENT_REPLICAS - 1))
-  echo "New replica count: $KUBERNETES_DEPLOYMENT_NEW_REPLICAS"
+  log "New replica count: $KUBERNETES_DEPLOYMENT_NEW_REPLICAS"
 
   # We don't scale down if we are already at the minimum.
-  if [[ "$KUBERNETES_DEPLOYMENT_NEW_REPLICAS" -lt "$KUBERNETES_DEPLOYMENT_MIN_SIZE"]]; then
-    echo "New replica count is below minimum allowed - not scaling down."
+  # However, we still delete the pod.
+  # Deleting the pod avoids potentially getting into a 'CrashLoopBackOff' sitation,
+  # depending on how long the agent's idle timeout is.
+  if [[ "$KUBERNETES_DEPLOYMENT_NEW_REPLICAS" -lt "$KUBERNETES_DEPLOYMENT_MIN_SIZE" ]]; then
+    log "New replica count is below minimum allowed - not scaling down."
+    kubectl delete -n $KUBERNETES_NAMESPACE pod/$KUBERNETES_POD_NAME --wait=false
     exit 0
   fi
 
-  echo "Annotating pod $KUBERNETES_POD_NAME..."
+  log "Annotating pod $KUBERNETES_POD_NAME..."
   kubectl annotate pod $KUBERNETES_POD_NAME controller.kubernetes.io/pod-deletion-cost=-1
 
-  echo "Scaling down deployment $KUBERNETES_DEPLOYMENT_NAME..."
+  log "Scaling down deployment $KUBERNETES_DEPLOYMENT_NAME..."
   kubectl scale -n $KUBERNETES_NAMESPACE --replicas=$KUBERNETES_DEPLOYMENT_NEW_REPLICAS deployment/$KUBERNETES_DEPLOYMENT_NAME
 fi
