@@ -43,7 +43,7 @@ retry_cmd() {
     __result__="$?"
 
     if [ $__result__ -eq "0" ]; then
-      log $__output__
+      log "$__output__"
       return 0
     fi
 

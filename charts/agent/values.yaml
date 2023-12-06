@@ -71,7 +71,7 @@ agent:
     # See: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configurable-scaling-behavior
     scaleUp:
       selectPolicy: Max
-      stabilizationWindowSeconds: 60
+      stabilizationWindowSeconds: 30
       policies:
         - type: Pods
           value: 10
