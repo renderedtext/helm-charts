@@ -14,7 +14,7 @@ if [[ -z $KUBERNETES_DEPLOYMENT_NAME || -z $KUBERNETES_NAMESPACE || -z $KUBERNET
 fi
 
 log() {
-  echo "[$(date --utc +%FT%T.%3NZ)] : $1"
+  echo "[$KUBERNETES_POD_NAME | $(date --utc +%FT%T.%3NZ)] : $1"
 }
 
 # We trap the script exit to ensure we always
@@ -31,11 +31,10 @@ on_exit() {
 
 trap 'on_exit $?' EXIT
 
-# Retry a command for a while, with random sleeps (1-5s) after failures.
 retry_cmd() {
   local __cmd__=$1
   local __result__=0
-  local __max_retries__=30
+  local __max_retries__=60
   local __sleep__=1
 
   for __i__ in $(seq 1 $__max_retries__); do
@@ -43,37 +42,55 @@ retry_cmd() {
     __result__="$?"
 
     if [ $__result__ -eq "0" ]; then
-      log "$__output__"
+      echo "$__output__"
       return 0
     fi
 
     if [[ $__i__ == $__max_retries__ ]]; then
       return $__result__
     else
-      __sleep__=$(echo "$(($(shuf -i 1000-5000 -n 1) / 1000))")
+      __sleep__=$(echo "$(($(shuf -i 1000-3000 -n 1) / 1000))")
+      echo "$__output__"
+      log "Trying again after $__sleep__..."
       sleep $__sleep__
     fi
   done
 }
 
-# If the agent is idle, we:
-# 1. Synchronouly lock the deployment. If another shutdown hook has already locked it, we retry for a while, and eventually give up.
-# 2. Annotate the agent pod with a pod deletion cost.
-# 3. Decrease the deployment replica count.
-# 4. Release the deployment lock.
-
 lock_deployment() {
-  retry_cmd "kubectl annotate -n $KUBERNETES_NAMESPACE deployment/$KUBERNETES_DEPLOYMENT_NAME semaphoreci.com/handle=$KUBERNETES_POD_NAME"
+  annotation_and_version=($(kubectl get \
+    -n $KUBERNETES_NAMESPACE \
+    -o jsonpath='{.metadata.resourceVersion}{" "}{.metadata.annotations.semaphoreci\.com/handle}' \
+    deployment/$KUBERNETES_DEPLOYMENT_NAME
+  ))
+
+  # Two values returned => annotation is already set.
+  if [[ ${#annotation_and_version[@]} -eq 2 ]]; then
+    log "Deployment $KUBERNETES_DEPLOYMENT_NAME is already locked by '${annotation_and_version[1]}'"
+    return 1
+  fi
+
+  # Only one value is returned => annotation is not set.
+  resource_version=${annotation_and_version[0]}
+  log "Deployment $KUBERNETES_DEPLOYMENT_NAME is not locked - acquiring lock with v=$resource_version..."
+
+  output=$(kubectl annotate \
+    -n $KUBERNETES_NAMESPACE \
+    --resource-version=$resource_version \
+    deployment/$KUBERNETES_DEPLOYMENT_NAME \
+    semaphoreci.com/handle=$KUBERNETES_POD_NAME 2>&1
+  )
+
   if [ $? -eq 0 ]; then
-    log "Deployment locked."
+    log "Deployment $KUBERNETES_DEPLOYMENT_NAME locked."
     return 0
   else
-    log "Could not lock deployment."
+    log "Deployment $KUBERNETES_DEPLOYMENT_NAME could not be annotated - $output."
     return 1
   fi
 }
 
-lock_deployment $KUBERNETES_DEPLOYMENT_NAME $KUBERNETES_POD_NAME
+retry_cmd "lock_deployment $KUBERNETES_DEPLOYMENT_NAME $KUBERNETES_POD_NAME"
 if [ $? -eq 0 ]; then
   KUBERNETES_DEPLOYMENT_REPLICAS=$(kubectl get -n $KUBERNETES_NAMESPACE deployment/$KUBERNETES_DEPLOYMENT_NAME -o jsonpath='{.status.replicas}')
   log "Current replica count: $KUBERNETES_DEPLOYMENT_REPLICAS"
@@ -95,4 +112,6 @@ if [ $? -eq 0 ]; then
 
   log "Scaling down deployment $KUBERNETES_DEPLOYMENT_NAME..."
   kubectl scale -n $KUBERNETES_NAMESPACE --replicas=$KUBERNETES_DEPLOYMENT_NEW_REPLICAS deployment/$KUBERNETES_DEPLOYMENT_NAME
+else
+  log "Could not lock deployment - giving up."
 fi
