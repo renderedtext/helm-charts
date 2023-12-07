@@ -6,6 +6,8 @@ Install one or multiple [Semaphore agent](https://github.com/semaphoreci/agent) 
   - [Configure agent pool size](#configure-agent-pool-size)
   - [Disable autoscaling](#disable-autoscaling)
   - [Configure autoscaling policies](#configure-autoscaling-policies)
+    - [Scaling up](#scaling-up)
+    - [Scaling down](#scaling-down)
 - [Using a pre-job hook](#using-a-pre-job-hook)
   - [Disabling the pre-job hook](#disabling-the-pre-job-hook)
   - [Using a custom pre-job hook](#using-a-custom-pre-job-hook)
@@ -88,6 +90,8 @@ helm install semaphore-agent charts/agent \
 
 ### Configure autoscaling policies
 
+#### Scaling up
+
 By default, the HPA will behave the following way: If jobs are in the queue, the number of agents will be increased by 200% or by 10, whichever is greatest, every 30s. However, you can configure that behavior by overriding the default value. For example, here's an example `values.yml` to override the default behavior:
 
 ```yaml
@@ -118,6 +122,10 @@ helm upgrade --install semaphore-agent charts/agent \
   --create-namespace \
   -f values.yml
 ```
+
+#### Scaling down
+
+The number of agents is scaled down every time an agent becomes idle for a period of seconds. By default, an agent becomes idle after 30 minutes without being assigned to any job. You can control this period with the `agent.autoscaling.idleTimeoutForScaleDown` property.
 
 ## Using a pre-job hook
 
