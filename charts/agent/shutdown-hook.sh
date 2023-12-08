@@ -1,6 +1,7 @@
 # If the agent is shutting down for any other reason other than 'IDLE',
 # we don't decrease the deployment's replica count, and just let k8s restart the pod.
 if [[ $SEMAPHORE_AGENT_SHUTDOWN_REASON != "IDLE" ]]; then
+  echo "Agent disconnected due to $SEMAPHORE_AGENT_SHUTDOWN_REASON - not doing anything."
   exit 0
 fi
 
@@ -31,6 +32,9 @@ on_exit() {
 
 trap 'on_exit $?' EXIT
 
+# Exit code 0 -> successful, no need to retry
+# Exit code 1 -> failure, retry
+# Exit code 2 -> failure, but should not retry
 retry_cmd() {
   local __cmd__=$1
   local __result__=0
@@ -46,6 +50,11 @@ retry_cmd() {
       return 0
     fi
 
+    if [ $__result__ -eq "2" ]; then
+      echo "$__output__"
+      exit 2
+    fi
+
     if [[ $__i__ == $__max_retries__ ]]; then
       return $__result__
     else
@@ -58,11 +67,18 @@ retry_cmd() {
 }
 
 lock_deployment() {
-  annotation_and_version=($(kubectl get \
+  output=$(kubectl get \
     -n $KUBERNETES_NAMESPACE \
     -o jsonpath='{.metadata.resourceVersion}{" "}{.metadata.annotations.semaphoreci\.com/handle}' \
-    deployment/$KUBERNETES_DEPLOYMENT_NAME
-  ))
+    deployment/$KUBERNETES_DEPLOYMENT_NAME 2>&1
+  )
+
+  if [ $? != 0 ]; then
+    log "Error getting deployment metadata for $KUBERNETES_DEPLOYMENT_NAME: $output"
+    return 2
+  fi
+
+  annotation_and_version=($output)
 
   # Two values returned => annotation is already set.
   if [[ ${#annotation_and_version[@]} -eq 2 ]]; then
