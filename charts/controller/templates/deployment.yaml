@@ -10,6 +10,9 @@ spec:
     matchLabels:
       {{- include "controller.selectorLabels" . | nindent 6 }}
   template:
+    metadata:
+      labels:
+        {{- include "controller.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "controller.fullname" . }}
       securityContext:
