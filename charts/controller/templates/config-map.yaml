@@ -1,0 +1,13 @@
+{{- if .Values.agent.defaultPodSpec.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "controller.agent.defaultPodSpec.name" . }}
+  labels:
+    {{- include "controller.labels" . | nindent 4 }}
+data:
+  mainContainer: |
+{{ include "controller.agent.defaultPodSpec.mainContainer" . | indent 4 }}
+  pod: |
+{{ include "controller.agent.defaultPodSpec.pod" . | indent 4 }}
+{{- end }}

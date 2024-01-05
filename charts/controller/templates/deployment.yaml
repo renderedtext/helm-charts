@@ -40,6 +40,8 @@ spec:
                   key: endpoint
             - name: SEMAPHORE_AGENT_IMAGE
               value: "{{ .Values.agent.image }}:{{ .Values.agent.version }}"
+            - name: SEMAPHORE_AGENT_STARTUP_PARAMETERS
+              value: "{{ include "controller.agent.startupParameters" . }}"
             - name: KUBERNETES_SERVICE_ACCOUNT
               value: "{{ include "controller.fullname" . }}-agent"
             - name: MAX_PARALLEL_JOBS

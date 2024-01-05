@@ -18,7 +18,6 @@ agent:
   # TODO
   allowedImagesForJobs: []
 
-  # TODO
   # By default, the controller creates a pod spec which will be used
   # if no pod spec are specified in the agent types secret.
   # The default pod spec adds a pre-job hook which installs the Semaphore toolbox.
@@ -28,6 +27,11 @@ agent:
     pod: {}
     mainContainer: {}
     sidecarContainers: {}
+    preJobHook:
+      enabled: true
+      path: "/opt/semaphore/hooks"
+      failOnError: true
+      customScript: ""
 
 # How many jobs the controller will keep running in parallel
 parallelism: 10
