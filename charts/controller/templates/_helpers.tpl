@@ -112,5 +112,13 @@ Expand the name of the default pod spec config map.
 {{- if .Values.agent.defaultPodSpec.preJobHook.failOnError }}
 {{- $startupParameters = append $startupParameters "--fail-on-pre-job-hook-error" }}
 {{- end }}
+{{- if .Values.agent.podStartTimeout }}
+{{- $startupParameters = append $startupParameters "--kubernetes-pod-start-timeout" }}
+{{- $startupParameters = append $startupParameters .Values.agent.podStartTimeout }}
+{{- end }}
+{{- if .Values.agent.allowedImages }}
+{{- $startupParameters = append $startupParameters "--kubernetes-allowed-images" }}
+{{- $startupParameters = append $startupParameters .Values.agent.allowedImages }}
+{{- end }}
 {{- join " " $startupParameters }}
 {{- end }}

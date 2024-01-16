@@ -30,6 +30,12 @@ agent:
       failOnError: true
       customScript: ""
 
+  # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#--kubernetes-pod-start-timeout
+  podStartTimeout: 300
+
+  # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#restricting-images-used-in-jobs
+  allowedImages: ""
+
 # How many jobs the controller will keep running in parallel
 parallelism: 10
 
