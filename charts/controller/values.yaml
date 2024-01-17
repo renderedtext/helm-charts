@@ -39,6 +39,11 @@ agent:
 # How many jobs the controller will keep running in parallel
 parallelism: 10
 
+# Configures log verbosity.
+# See: https://github.com/kubernetes/klog
+logs:
+  verbosity: "4"
+
 nameOverride: ""
 fullnameOverride: ""
 resources: {}

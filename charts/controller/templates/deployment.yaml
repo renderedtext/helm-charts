@@ -23,6 +23,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image }}:{{ .Values.imageTag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - -v={{ .Values.logs.verbosity }}
           env:
             - name: KUBERNETES_NAMESPACE
               valueFrom:
