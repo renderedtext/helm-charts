@@ -10,6 +10,7 @@ Run Semaphore jobs for one or multiple [Semaphore agent type](https://github.com
   - [Do not specify a default pod spec](#do-not-specify-a-default-pod-spec)
   - [Overriding the default pod spec values](#overriding-the-default-pod-spec-values)
   - [Overriding the default pod spec for a single agent type](#overriding-the-default-pod-spec-for-a-single-agent-type)
+- [Job retention policies](#job-retention-policies)
 - [Logging](#logging)
 - [Configuration](#configuration)
 
@@ -191,6 +192,20 @@ stringData:
   registrationToken: <registration-token>
   agentStartupParameters: |-
     "--kubernetes-pod-spec my-agent-type-2-pod-spec --pre-job-hook-path /opt/semaphore/hooks/pre-job-hook"
+```
+
+## Job retention policies
+
+By default, all successful Kubernetes jobs are deleted after they are finished, and all failed jobs are kept for 1 day to help with troubleshooting purposes. However, those values can be configured. For example, you can keep all failed jobs for 7 days, and all successful jobs for 15 minutes, with:
+
+```bash
+helm upgrade --install semaphore-controller charts/controller \
+  --namespace semaphore \
+  --create-namespace \
+  --set endpoint=<your-organization>.semaphoreci.com \
+  --set apiToken=<your-api-token> \
+  --set keepFailedJobsFor=7d \
+  --set keepSuccessfulJobsFor=15m
 ```
 
 ## Logging

@@ -39,6 +39,11 @@ agent:
 # How many jobs the controller will keep running in parallel
 parallelism: 10
 
+# By default, we keep failed Kubernetes jobs for 1 day, for troubleshooting purposes.
+# Successful jobs are deleted immediately after they finish.
+keepFailedJobsFor: 1d
+keepSuccessfulJobsFor: 0
+
 # Configures log verbosity.
 # See: https://github.com/kubernetes/klog
 logs:

@@ -48,5 +48,9 @@ spec:
               value: "{{ include "controller.fullname" . }}-agent"
             - name: MAX_PARALLEL_JOBS
               value: "{{ .Values.parallelism }}"
+            - name: KEEP_FAILED_JOBS_FOR
+              value: "{{ .Values.keepFailedJobsFor }}"
+            - name: KEEP_SUCCESSFUL_JOBS_FOR
+              value: "{{ .Values.keepSuccessfulJobsFor }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
