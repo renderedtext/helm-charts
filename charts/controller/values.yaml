@@ -44,6 +44,9 @@ parallelism: 10
 keepFailedJobsFor: 1d
 keepSuccessfulJobsFor: 0
 
+# How long to wait for the Kubernetes job to start running before cancelling it.
+jobStartTimeout: 5m
+
 # Configures log verbosity.
 # See: https://github.com/kubernetes/klog
 logs:

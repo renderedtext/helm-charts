@@ -52,5 +52,7 @@ spec:
               value: "{{ .Values.keepFailedJobsFor }}"
             - name: KEEP_SUCCESSFUL_JOBS_FOR
               value: "{{ .Values.keepSuccessfulJobsFor }}"
+            - name: JOB_START_TIMEOUT
+              value: "{{ .Values.jobStartTimeout }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
