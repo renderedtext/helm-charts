@@ -1,7 +1,11 @@
 # Install the Semaphore toolbox in the job
 rm -rf ~/.toolbox
 
-downloadPath="https://github.com/semaphoreci/toolbox/releases/download/v1.19.40/self-hosted-linux.tar"
+downloadPath="https://github.com/semaphoreci/toolbox/releases/latest/download/self-hosted-linux.tar"
+if [ ! -z "${SEMAPHORE_TOOLBOX_VERSION}" ]; then
+  downloadPath="https://github.com/semaphoreci/toolbox/releases/download/$SEMAPHORE_TOOLBOX_VERSION/self-hosted-linux.tar"
+fi
+
 echo "Downloading Semaphore toolbox from $downloadPath..."
 curl -sL --retry 5 --connect-timeout 3 $downloadPath -o /tmp/toolbox.tar
 tar -xvf /tmp/toolbox.tar

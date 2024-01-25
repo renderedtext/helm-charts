@@ -22,8 +22,11 @@ agent:
   defaultPodSpec:
     enabled: true
     pod: {}
-    mainContainer: {}
     sidecarContainers: {}
+    mainContainer:
+      env:
+      - name: SEMAPHORE_TOOLBOX_VERSION
+        value: v1.21.7
     preJobHook:
       enabled: true
       path: "/opt/semaphore/hooks"
