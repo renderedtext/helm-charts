@@ -11,12 +11,15 @@ Run Semaphore jobs for one or multiple [Semaphore agent type](https://github.com
   - [Overriding the default pod spec values](#overriding-the-default-pod-spec-values)
   - [Overriding the default pod spec for a single agent type](#overriding-the-default-pod-spec-for-a-single-agent-type)
 - [Job retention policies](#job-retention-policies)
+- [Job start timeouts](#job-start-timeouts)
 - [Logging](#logging)
 - [Configuration](#configuration)
 
 ## Installation
 
-Using the Semaphore API token, install the chart:
+This chart installs the [agent-k8s-controller](https://github.com/renderedtext/agent-k8s-controller) into your Kubernetes cluster.
+
+You can install it with your Semaphore API token and your Semaphore organization endpoint:
 
 ```bash
 helm upgrade --install semaphore-controller charts/controller \
@@ -206,6 +209,21 @@ helm upgrade --install semaphore-controller charts/controller \
   --set apiToken=<your-api-token> \
   --set keepFailedJobsFor=7d \
   --set keepSuccessfulJobsFor=15m
+```
+
+## Job start timeouts
+
+By default, if the Kubernetes job created by the controller does not start in 5 minutes, it will cancel it, deleting it. You can override that behavior with the `jobStartTimeout` parameter.
+
+For example, if you want to extend the timeout to 30 minutes instead, you can do it with:
+
+```bash
+helm upgrade --install semaphore-controller charts/controller \
+  --namespace semaphore \
+  --create-namespace \
+  --set endpoint=<your-organization>.semaphoreci.com \
+  --set apiToken=<your-api-token> \
+  --set jobStartTimeout=30m
 ```
 
 ## Logging
