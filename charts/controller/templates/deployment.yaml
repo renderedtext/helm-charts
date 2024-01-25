@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "controller.fullname" . }}
+  labels:
+    {{- include "controller.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "controller.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "controller.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "controller.fullname" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image }}:{{ .Values.imageTag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          args:
+            - -v={{ .Values.logs.verbosity }}
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: SEMAPHORE_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "controller.fullname" . }}
+                  key: apiToken
+            - name: SEMAPHORE_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "controller.fullname" . }}
+                  key: endpoint
+            - name: SEMAPHORE_AGENT_IMAGE
+              value: "{{ .Values.agent.image }}:{{ .Values.agent.version }}"
+            - name: SEMAPHORE_AGENT_STARTUP_PARAMETERS
+              value: "{{ include "controller.agent.startupParameters" . }}"
+            - name: KUBERNETES_SERVICE_ACCOUNT
+              value: "{{ include "controller.fullname" . }}-agent"
+            - name: MAX_PARALLEL_JOBS
+              value: "{{ .Values.parallelism }}"
+            - name: KEEP_FAILED_JOBS_FOR
+              value: "{{ .Values.keepFailedJobsFor }}"
+            - name: KEEP_SUCCESSFUL_JOBS_FOR
+              value: "{{ .Values.keepSuccessfulJobsFor }}"
+            - name: JOB_START_TIMEOUT
+              value: "{{ .Values.jobStartTimeout }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

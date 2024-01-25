@@ -1,0 +1,62 @@
+# Default values for controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# The Semaphore API token and endpoint used by the controller to look into the job queue.
+# These are the only required values for this chart.
+apiToken: ""
+endpoint: ""
+
+image: semaphoreci/controller
+imageTag: ""
+imagePullPolicy: IfNotPresent
+
+agent:
+  image: semaphoreci/agent
+  version: v2.2.14
+
+  # By default, the controller creates a pod spec which will be used
+  # if no pod spec are specified in the agent types secret.
+  # The default pod spec adds a pre-job hook which installs the Semaphore toolbox.
+  # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#--kubernetes-pod-spec
+  defaultPodSpec:
+    enabled: true
+    pod: {}
+    sidecarContainers: {}
+    mainContainer:
+      env:
+      - name: SEMAPHORE_TOOLBOX_VERSION
+        value: v1.21.7
+    preJobHook:
+      enabled: true
+      path: "/opt/semaphore/hooks"
+      failOnError: true
+      customScript: ""
+
+  # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#--kubernetes-pod-start-timeout
+  podStartTimeout: 300
+
+  # See: https://github.com/semaphoreci/agent/blob/master/docs/kubernetes-executor.md#restricting-images-used-in-jobs
+  allowedImages: ""
+
+# How many jobs the controller will keep running in parallel
+parallelism: 10
+
+# By default, we keep failed Kubernetes jobs for 1 day, for troubleshooting purposes.
+# Successful jobs are deleted immediately after they finish.
+keepFailedJobsFor: 1d
+keepSuccessfulJobsFor: 0
+
+# How long to wait for the Kubernetes job to start running before cancelling it.
+jobStartTimeout: 5m
+
+# Configures log verbosity.
+# See: https://github.com/kubernetes/klog
+logs:
+  verbosity: "4"
+
+nameOverride: ""
+fullnameOverride: ""
+resources: {}
+securityContext: {}
+podSecurityContext: {}

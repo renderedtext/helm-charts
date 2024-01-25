@@ -1,3 +1,6 @@
+> [!WARNING]
+> This chart is deprecated. It does not work well with versions of Kubernetes >= 1.26. Please, use the [Semaphore custom controller chart](../controller) to run Semaphore jobs in your Kubernetes cluster.
+
 Install one or multiple [Semaphore agent](https://github.com/semaphoreci/agent) pools in a Kubernetes cluster.
 
 - [Installation](#installation)
