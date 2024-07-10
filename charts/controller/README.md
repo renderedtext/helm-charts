@@ -194,7 +194,7 @@ stringData:
   agentTypeName: s1-my-agent-type-2
   registrationToken: <registration-token>
   agentStartupParameters: |-
-    --kubernetes-pod-spec my-agent-type-2-pod-spec --pre-job-hook-path /opt/semaphore/hooks/pre-job-hook
+    --kubernetes-pod-spec my-agent-type-2-pod-spec --pre-job-hook-path /opt/semaphore/hooks/pre-job-hook --source-pre-job-hook --fail-on-pre-job-hook-error
 ```
 
 ## Job retention policies
