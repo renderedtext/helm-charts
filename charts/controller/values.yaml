@@ -2,9 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# The Semaphore API token and endpoint used by the controller to look into the job queue.
-# These are the only required values for this chart.
-apiToken: ""
+# The Semaphore endpoint used by the controller to look into the job queue.
+# This is the only required value for this chart.
 endpoint: ""
 
 image: semaphoreci/controller
