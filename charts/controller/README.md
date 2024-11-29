@@ -19,14 +19,13 @@ Run Semaphore jobs for one or multiple [Semaphore agent type](https://github.com
 
 This chart installs the [agent-k8s-controller](https://github.com/renderedtext/agent-k8s-controller) into your Kubernetes cluster.
 
-You can install it with your Semaphore API token and your Semaphore organization endpoint:
+You can install it with your Semaphore organization endpoint:
 
 ```bash
 helm upgrade --install semaphore-controller charts/controller \
   --namespace semaphore \
   --create-namespace \
-  --set endpoint=<your-organization>.semaphoreci.com \
-  --set apiToken=<your-api-token>
+  --set endpoint=<your-organization>.semaphoreci.com
 ```
 
 ## Start jobs for an agent type
@@ -76,7 +75,6 @@ helm upgrade --install semaphore-controller charts/controller \
   --namespace semaphore \
   --create-namespace \
   --set endpoint=<your-organization>.semaphoreci.com \
-  --set apiToken=<your-api-token> \
   --set agent.defaultPodSpec.preJobHook.enabled=false
 ```
 
@@ -89,7 +87,6 @@ helm upgrade --install semaphore-controller charts/controller \
   --namespace semaphore \
   --create-namespace \
   --set endpoint=<your-organization>.semaphoreci.com \
-  --set apiToken=<your-api-token> \
   --set agent.defaultPodSpec.preJobHook.customScript=$(cat my-custom-script.sh | base64)
 ```
 
@@ -102,7 +99,6 @@ helm upgrade --install semaphore-controller charts/controller \
   --namespace semaphore \
   --create-namespace \
   --set endpoint=<your-organization>.semaphoreci.com \
-  --set apiToken=<your-api-token> \
   --set agent.defaultPodSpec.enabled=false
 ```
 
@@ -114,7 +110,6 @@ For example, if you have a `custom-values.yml` file like this:
 
 ```yaml
 endpoint: <your-organization>.semaphoreci.com
-apiToken: <your-api-token>
 agent:
   defaultPodSpec:
     mainContainer:
@@ -206,7 +201,6 @@ helm upgrade --install semaphore-controller charts/controller \
   --namespace semaphore \
   --create-namespace \
   --set endpoint=<your-organization>.semaphoreci.com \
-  --set apiToken=<your-api-token> \
   --set keepFailedJobsFor=7d \
   --set keepSuccessfulJobsFor=15m
 ```
@@ -222,7 +216,6 @@ helm upgrade --install semaphore-controller charts/controller \
   --namespace semaphore \
   --create-namespace \
   --set endpoint=<your-organization>.semaphoreci.com \
-  --set apiToken=<your-api-token> \
   --set jobStartTimeout=30m
 ```
 

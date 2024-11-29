@@ -30,11 +30,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            - name: SEMAPHORE_API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "controller.fullname" . }}
-                  key: apiToken
             - name: SEMAPHORE_ENDPOINT
               valueFrom:
                 secretKeyRef:
