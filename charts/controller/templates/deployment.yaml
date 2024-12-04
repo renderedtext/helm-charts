@@ -33,8 +33,8 @@ spec:
             - name: SEMAPHORE_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "controller.fullname" . }}
-                  key: endpoint
+                  name: {{ include "controller.endpoint.secretName" . }}
+                  key: {{ include "controller.endpoint.secretKey" . }}
             - name: SEMAPHORE_AGENT_IMAGE
               value: "{{ .Values.agent.image }}:{{ .Values.agent.version }}"
             - name: SEMAPHORE_AGENT_STARTUP_PARAMETERS

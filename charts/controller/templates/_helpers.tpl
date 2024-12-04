@@ -122,3 +122,27 @@ Expand the name of the default pod spec config map.
 {{- end }}
 {{- join " " $startupParameters }}
 {{- end }}
+
+{{/*
+The name of the secret containing the endpoint URL.
+By default, this is the secret created by the chart.
+*/}}
+{{- define "controller.endpoint.secretName" -}}
+{{- if ne .Values.endpointSecret.name "" }}
+{{- .Values.endpointSecret.name }}
+{{- else }}
+{{- include "controller.fullname" . }}
+{{- end }}
+{{- end }}
+
+{{/*
+The key of the secret containing the endpoint URL.
+By default, this is "endpoint".
+*/}}
+{{- define "controller.endpoint.secretKey" -}}
+{{- if ne .Values.endpointSecret.name "" }}
+{{- .Values.endpointSecret.key }}
+{{- else }}
+{{- "endpoint" }}
+{{- end }}
+{{- end }}

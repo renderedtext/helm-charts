@@ -4,7 +4,12 @@
 
 # The Semaphore endpoint used by the controller to look into the job queue.
 # This is the only required value for this chart.
+# It can be specified as a raw value with .Values.endpoint,
+# or as a secret with .Values.endpointSecret.name and .Values.endpointSecret.key
 endpoint: ""
+endpointSecret:
+  name: ""
+  key: "endpoint"
 
 image: semaphoreci/controller
 imageTag: ""
