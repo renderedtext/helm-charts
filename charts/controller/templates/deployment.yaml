@@ -37,6 +37,8 @@ spec:
                   key: {{ include "controller.endpoint.secretKey" . }}
             - name: SEMAPHORE_AGENT_IMAGE
               value: "{{ .Values.agent.image }}:{{ .Values.agent.version }}"
+            - name: SEMAPHORE_AGENT_LOG_LEVEL
+              value: "{{ .Values.agent.logLevel }}"
             - name: SEMAPHORE_AGENT_STARTUP_PARAMETERS
               value: "{{ include "controller.agent.startupParameters" . }}"
             - name: KUBERNETES_SERVICE_ACCOUNT
