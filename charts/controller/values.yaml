@@ -18,6 +18,7 @@ imagePullPolicy: IfNotPresent
 agent:
   image: semaphoreci/agent
   version: v2.2.28
+  logLevel: "info"
 
   # By default, the controller creates a pod spec which will be used
   # if no pod spec are specified in the agent types secret.
