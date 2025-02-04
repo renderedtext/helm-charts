@@ -120,6 +120,10 @@ Expand the name of the default pod spec config map.
 {{- $startupParameters = append $startupParameters "--kubernetes-allowed-images" }}
 {{- $startupParameters = append $startupParameters .Values.agent.allowedImages }}
 {{- end }}
+{{- if .Values.agent.defaultImage }}
+{{- $startupParameters = append $startupParameters "--kubernetes-default-image" }}
+{{- $startupParameters = append $startupParameters .Values.agent.defaultImage }}
+{{- end }}
 {{- join " " $startupParameters }}
 {{- end }}
 
