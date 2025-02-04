@@ -14,6 +14,16 @@ entries:
   controller:
   - apiVersion: v2
     appVersion: v0.2.1
+    created: "2025-02-04T15:05:41.830172506Z"
+    description: A Helm chart to install the Semaphore job controller
+    digest: cf669ee07698e3f479ada497b385fc19e45285dbb3f588aeed0f5395e8d036be
+    name: controller
+    type: application
+    urls:
+    - https://github.com/renderedtext/helm-charts/releases/download/controller-0.2.3/controller-0.2.3.tgz
+    version: 0.2.3
+  - apiVersion: v2
+    appVersion: v0.2.1
     created: "2024-12-19T14:29:59.667117796Z"
     description: A Helm chart to install the Semaphore job controller
     digest: ad0027949be204dbf974fae9a306f3bdf566bf005551683f618616bb8ccd0bcf
@@ -84,4 +94,4 @@ entries:
     urls:
     - https://github.com/renderedtext/helm-charts/releases/download/external-metrics-server-0.1.0/external-metrics-server-0.1.0.tgz
     version: 0.1.0
-generated: "2024-12-19T14:29:59.854260819Z"
+generated: "2025-02-04T15:05:42.024548298Z"
