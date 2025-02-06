@@ -35,22 +35,14 @@ echo "Semaphore toolbox successfully installed."
 mkdir -p ~/.ssh
 
 #
-# Do it for known Git providers
+# Do it for GitHub for backwards compatibility
 #
 echo 'Host github.com' | tee -a ~/.ssh/config
 echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
 echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
 
-echo 'Host gitlab.com' | tee -a ~/.ssh/config
-echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
-echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
-
-echo 'Host bitbucket.com' | tee -a ~/.ssh/config
-echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
-echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
-
 #
-# Do it for an unknown one
+# Do it for currently used one
 #
 url="${SEMAPHORE_GIT_URL#ssh://}"  # Remove the "ssh://" scheme if present
 url="${url#*@}"                    # Remove everything up to (and including) the '@' if present
