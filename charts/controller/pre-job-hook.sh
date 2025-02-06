@@ -31,9 +31,31 @@ fi
 echo "Semaphore toolbox successfully installed."
 
 # Create SSH configuration.
-# This is required in order to avoid having to manually accept the GitHub SSH keys fingerprints on checkout.
-# Ideally, we should populate ~/.ssh/known_hosts with the GitHub keys from api.github.com/meta.
+# This is required to avoid manually accepting the Server SSH key fingerprints on checkout.
 mkdir -p ~/.ssh
+
+#
+# Do it for known Git providers
+#
 echo 'Host github.com' | tee -a ~/.ssh/config
+echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
+echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
+
+echo 'Host gitlab.com' | tee -a ~/.ssh/config
+echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
+echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
+
+echo 'Host bitbucket.com' | tee -a ~/.ssh/config
+echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
+echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
+
+#
+# Do it for an unknown one
+#
+url="${SEMAPHORE_GIT_URL#ssh://}"  # Remove the "ssh://" scheme if present
+url="${url#*@}"                    # Remove everything up to (and including) the '@' if present
+host="${url%%[:/]*}"               # Now extract the host: it's the substring until the first occurrence of either ':' (port separator) or '/' (path separator)
+
+echo "Host ${host}" | tee -a ~/.ssh/config
 echo '  StrictHostKeyChecking no' | tee -a ~/.ssh/config
 echo '  UserKnownHostsFile=/dev/null' | tee -a ~/.ssh/config
